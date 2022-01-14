@@ -12,12 +12,14 @@ defmodule BlockScoutWeb.ChainController do
   alias Explorer.ExchangeRates.Token
   alias Explorer.Market
   alias Phoenix.View
+  alias Explorer.Chain.Cache.BlockSumBaseFeeBurnt
 
   def show(conn, _params) do
     transaction_estimated_count = Chain.transaction_estimated_count()
     total_gas_usage = Chain.total_gas_usage()
     block_count = Chain.block_estimated_count()
     address_count = Chain.address_estimated_count()
+    base_fee_burnt_count = BlockSumBaseFeeBurnt.get_sum_base_fee_burnt()
 
     market_cap_calculation =
       case Application.get_env(:explorer, :supply) do
@@ -45,6 +47,7 @@ defmodule BlockScoutWeb.ChainController do
     render(
       conn,
       "show.html",
+      base_fee_burnt_count: base_fee_burnt_count,
       address_count: address_count,
       average_block_time: AverageBlockTime.average_block_time(),
       exchange_rate: exchange_rate,

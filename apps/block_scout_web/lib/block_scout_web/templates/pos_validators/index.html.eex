@@ -1,0 +1,65 @@
+<section class="container" data-page="pos-validators">
+  <%= render BlockScoutWeb.Advertisement.TextAdView, "index.html", conn: @conn %>
+  <div class="card">
+    <div class="card-body" data-async-load data-async-listing="<%= @current_path %>">
+      <h1 class="card-title list-title-description"><%= gettext "Pos Validators" %></h1>
+
+      <div class="list-top-pagination-container-wrapper pos-validators-list-search-input-outer-container" style="display: flex; float: right;">
+        <%= render BlockScoutWeb.CommonComponentsView, "_pagination_container.html", position: "top", cur_page_number: "1", show_pagination_limit: true, data_next_page_button: true, data_prev_page_button: true %>
+      </div>
+
+      <div class="addresses-table-container">
+        <div class="stakes-table-container">
+          <table>
+            <thead>
+              <tr>
+                <th class="stakes-table-th">
+                  <div class="stakes-table-th-content">Rank</div>
+                </th>
+                <th class="stakes-table-th">
+                  <div class="stakes-table-th-content">Address</div>
+                </th>
+                <th class="stakes-table-th">
+                  <div class="stakes-table-th-content">Voting Power</div>
+                </th>
+                <th class="stakes-table-th">
+                  <div class="stakes-table-th-content">First Block</div>
+                </th>
+                <th class="stakes-table-th">
+                  <div class="stakes-table-th-content">
+                    Last Block
+                  </div>
+                </th>
+                <th class="stakes-table-th">
+                  <div class="stakes-table-th-content">
+                  1 Day
+                  </div>
+                </th>
+                <th class="stakes-table-th">
+                  <div class="stakes-table-th-content">
+                  7 Days
+                  </div>
+                </th>
+                <th class="stakes-table-th">
+                  <div class="stakes-table-th-content">
+                  30 Days
+                  </div>
+                </th>
+                <th class="stakes-table-th">
+                  <div class="stakes-table-th-content">
+                  Active
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody data-items data-selector="top-pos-validators-list">
+              <%= render BlockScoutWeb.CommonComponentsView, "_table-loader.html" %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <%= render BlockScoutWeb.CommonComponentsView, "_pagination_container.html", position: "bottom", cur_page_number: "1", show_pagination_limit: true, data_next_page_button: true, data_prev_page_button: true %>
+    </div>
+  </div>
+</section>

@@ -32,6 +32,7 @@ defmodule Explorer.Validator.MetadataImporter do
             update: [
               set: [
                 name: ^validator_changeset.name,
+                reward: ^validator_changeset.reward,
                 metadata: ^validator_changeset.metadata
               ]
             ],

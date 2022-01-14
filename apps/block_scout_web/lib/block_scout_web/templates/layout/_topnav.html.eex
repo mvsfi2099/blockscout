@@ -102,6 +102,14 @@
               <% end %>
             </li>
           <% end %>
+          <li class="nav-item">
+            <%= link to: pos_validators_path(@conn, :index), class: "nav-link topnav-nav-link #{tab_status("pos-validators", @conn.request_path)}" do %>
+              <span class="nav-link-icon">
+                <%= render BlockScoutWeb.IconsView, "_apps_icon.html" %>
+              </span>
+              <%= gettext("Validators") %>
+            <% end %>
+          </li>
         <% end %>
         <%= if Application.get_env(:block_scout_web, BlockScoutWeb.ApiRouter)[:reading_enabled] || Application.get_env(:block_scout_web, :api_url) do %>
           <li class="nav-item dropdown">
@@ -161,6 +169,7 @@
             </div>
           </li>
         <% end %>
+        <!--
         <li class="nav-item dropdown">
           <a class="nav-link topnav-nav-link active-icon <%= if dropdown_nets() != [], do: "dropdown-toggle js-show-network-selector" %>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span class="nav-link-icon">
@@ -183,6 +192,7 @@
             <% end %> 
           </div>
         </li>
+        -->
       </ul>
       <!-- Dark mode changer -->
       <button class="dark-mode-changer" id="dark-mode-changer">

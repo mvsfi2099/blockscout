@@ -48,6 +48,8 @@ RUN npm install canvas
 # Add blockscout npm deps
 RUN cd apps/block_scout_web/assets/ && \
     npm install && \
+    cd -
+RUN cd apps/block_scout_web/assets/ && \
     npm run deploy && \
     cd -
 

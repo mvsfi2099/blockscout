@@ -6,6 +6,7 @@ defmodule BlockScoutWeb.API.RPC.StatsController do
   alias Explorer.{Chain, ExchangeRates}
   alias Explorer.Chain.Cache.{AddressSum, AddressSumMinusBurnt}
   alias Explorer.Chain.Wei
+  alias Explorer.Chain.Cache.BlockSumBaseFeeBurnt
 
   def tokensupply(conn, params) do
     with {:contractaddress_param, {:ok, contractaddress_param}} <- fetch_contractaddress(params),
@@ -39,6 +40,13 @@ defmodule BlockScoutWeb.API.RPC.StatsController do
     cached_wei_total_supply = AddressSum.get_sum()
 
     render(conn, "ethsupply.json", total_supply: cached_wei_total_supply)
+  end
+
+  def totalburnts(conn, _params) do
+    # cached_wei_total_burnts = Chain.fetch_sum_coin_base_fee_burnt()
+    cached_wei_total_burnts = BlockSumBaseFeeBurnt.get_sum_base_fee_burnt()
+
+    render(conn, "totalburnts.json", total_burnts: cached_wei_total_burnts)
   end
 
   def coinsupply(conn, _params) do

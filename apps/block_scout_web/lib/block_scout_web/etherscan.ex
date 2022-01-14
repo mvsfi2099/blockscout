@@ -311,6 +311,12 @@ defmodule BlockScoutWeb.Etherscan do
     "result" => "101959776311500000000000000"
   }
 
+  @stats_totalburnts_example_value %{
+    "status" => "1",
+    "message" => "OK",
+    "result" => "101959776311500000000000000"
+  }
+
   @stats_coinsupply_example_value 101_959_776.3115
 
   @stats_coinprice_example_value %{
@@ -2043,6 +2049,30 @@ defmodule BlockScoutWeb.Etherscan do
     ]
   }
 
+  @stats_totalburnts_action %{
+    name: "totalburnts",
+    description: "Get total burnts in Wei from DB.",
+    required_params: [],
+    optional_params: [],
+    responses: [
+      %{
+        code: "200",
+        description: "successful operation",
+        example_value: Jason.encode!(@stats_totalburnts_example_value),
+        model: %{
+          name: "Result",
+          fields: %{
+            result: %{
+              type: "integer",
+              description: "Get total burnts in Wei from DB.",
+              example: 101_959_776.3115
+            }
+          }
+        }
+      }
+    ]
+  }
+
   @stats_coinsupply_action %{
     name: "coinsupply",
     description: "Get total coin supply from DB minus burnt number.",
@@ -2732,6 +2762,7 @@ defmodule BlockScoutWeb.Etherscan do
       @stats_ethsupplyexchange_action,
       @stats_ethsupply_action,
       @stats_coinsupply_action,
+      @stats_totalburnts_action,
       @stats_coinprice_action,
       @stats_totalfees_action
     ]

@@ -3,12 +3,15 @@ defmodule BlockScoutWeb.BlockView do
 
   import Math.Enum, only: [mean: 1]
 
-  alias Explorer.Chain
-  alias Explorer.Chain.{Block, Wei}
+  alias Explorer.{Chain, Repo}
+  alias Explorer.Chain.{Address, Block, Wei}
   alias Explorer.Chain.Block.Reward
-  alias Explorer.Counters.{BlockBurnedFeeCounter, BlockPriorityFeeCounter}
 
   @dialyzer :no_match
+
+  def reward_address(reward_addr) do
+    Repo.get_by(Address.Name, reward: reward_addr, primary: true)  |> Repo.preload(:address)
+  end
 
   def average_gas_price(%Block{transactions: transactions}) do
     average =
@@ -80,4 +83,14 @@ defmodule BlockScoutWeb.BlockView do
     |> Chain.block_combined_rewards()
     |> format_wei_value(:ether)
   end
+  
+  def block_emission_reward(burnt_fee) do
+    max = Wei.from(Decimal.new(1), :ether)
+    reward = Wei.mult(burnt_fee, 120)
+    |> Wei.to(:wei)
+    |> Decimal.div(100)
+    |> Wei.from(:wei)
+    reward = if Wei.to(reward, :wei) > Wei.to(max, :wei), do: max, else: reward
+    format_wei_value(reward, :ether)
+  end  
 end

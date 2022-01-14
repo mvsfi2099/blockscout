@@ -82,6 +82,15 @@
                 </div>
             </div>
             <% end %>
+            <div class="dashboard-banner-chart-legend-item">
+                <span class="dashboard-banner-chart-legend-label">
+                <%= gettext "Total burned" %>
+                </span>
+                <div>
+                  <% total_burned = @base_fee_burnt_count |> Decimal.to_integer() %>
+                  <span class="dashboard-banner-chart-legend-value d-flex"><%= format_according_to_decimals(total_burned, Decimal.new(18)) %></span>
+                </div>
+            </div>
           <% end %>
           <%= if Map.has_key?(@chart_config, :transactions) do %>
 

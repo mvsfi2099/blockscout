@@ -1,9 +1,10 @@
-<% burned_fee = if !is_nil(@block.base_fee_per_gas), do: Wei.mult(@block.base_fee_per_gas, BlockBurnedFeeCounter.fetch(@block.hash)), else: nil %>
-<% priority_fee = if !is_nil(@block.base_fee_per_gas), do: BlockPriorityFeeCounter.fetch(@block.hash), else: nil %>
+<% burned_fee = if !is_nil(@block.base_fee_per_gas), do: Wei.mult(@block.base_fee_per_gas, @block.gas_used), else: nil %>
+<%# burned_fee = if !is_nil(@block.base_fee_per_gas), do: Wei.mult(@block.base_fee_per_gas, BlockBurnedFeeCounter.fetch(@block.hash)), else: nil %>
+<% priority_fee = if !is_nil(@block.base_fee_per_gas), do: Explorer.Counters.BlockPriorityFeeCounter.fetch(@block.hash), else: nil %>
 <section>
   <%= render BlockScoutWeb.Advertisement.TextAdView, "index.html", conn: @conn %>
   <div class="row">
-    <div class="col-md-12 js-ad-dependant-mb-2">
+    <div class="col-md-12 col-lg-8 js-ad-dependant-mb-2">
       <!-- Block Details -->
       <div class="card js-ad-dependant-mb-2">
         <div class="card-body transaction-details">
@@ -83,15 +84,15 @@
               </a>
             </dd>
           </dl>
-          <!-- Miner/Validator -->
+          <!-- Miner/Validator | Reward -->
           <%= if System.get_env("HIDE_BLOCK_MINER") !== "true" do %>
             <dl class="row">
               <dt class="col-sm-3 col-lg-2 text-muted">
                 <%= render BlockScoutWeb.CommonComponentsView, "_i_tooltip_2.html",
                 text: gettext("A block producer who successfully included the block onto the blockchain.") %>
-                <%= gettext("Miner") %>
+                <%= gettext("Reward") %>
               </dt>
-              <dd class="col-sm-9 col-lg-10"><%= render BlockScoutWeb.AddressView, "_link.html", address: @block.miner, contract: false, class: "", use_custom_tooltip: false, show_full_hash: true %>
+              <dd class="col-sm-9 col-lg-10"><%= render BlockScoutWeb.AddressView, "_link.html", address: @block.miner, contract: true, class: "", use_custom_tooltip: false, show_full_hash: true %>
                 <%= render BlockScoutWeb.CommonComponentsView, "_btn_copy.html",
                   additional_classes: ["btn-copy-icon-small", "btn-copy-icon-custom", "btn-copy-icon-no-borders"],
                   clipboard_text: @block.miner,
@@ -221,19 +222,15 @@
                 <dd class="col-sm-9 col-lg-10"><%= format_wei_value(%Wei{value: priority_fee}, :ether) %></dd>
             </dl>
           <% end %>  
-          <%= if show_reward?(@block.rewards) do %>
             <hr>
-            <%= for block_reward <- @block.rewards do %>
                 <dl class="row">
                   <dt class="col-sm-3 col-lg-2 text-muted">
                     <%= render BlockScoutWeb.CommonComponentsView, "_i_tooltip_2.html",
                     text: gettext("Amount of distributed reward. Miners receive a static block reward + Tx fees + uncle fees.") %>
-                    <%= block_reward_text(block_reward, @block.miner.hash) %>
+                    <%= gettext("Emission Reward") %>
                   </dt>
-                  <dd class="col-sm-9 col-lg-10"><%= format_wei_value(block_reward.reward, :ether) %></dd>
+                  <dd class="col-sm-9 col-lg-10"><%= block_emission_reward(burned_fee) %></dd>
                 </dl>
-            <% end %>
-          <% end %>
           <%= if block_type(@block) == "Block" do %>
             <%= if length(@block.uncle_relations) > 0 do %>
               <!-- Uncles -->
@@ -257,6 +254,56 @@
               </dl>
             <% end %>
           <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12 col-lg-4 flex-column flex-md-row flex-lg-column pl-0-md js-ad-dependant-mb-2">
+      <!-- Validator -->
+      <div class="card card-background-1 flex-grow-1">
+        <div class="card-body card-body-flex-column-space-between">
+          <h2 class="card-title balance-card-title"><%= gettext "Validator" %></h2>
+          <div class="text-right mt-3">
+            <% address_name = reward_address(to_string(@block.miner_hash)) %>
+
+            <!-- Validator's Name -->
+            <%= if !is_nil(address_name) do %>
+              <span
+                data-toggle="tooltip"
+                data-placement="top"
+                data-template="<div class='tooltip tooltip-inversed-color tooltip-validator-details' role='tooltip'><div class='arrow'></div><div class='tooltip-inner'></div></div>"
+                title="<%= address_name.address %>">
+                <h3 class="address-balance-text text-truncate text-left">
+                  <%= address_name.name %>
+                  <br/>
+                  <%= render BlockScoutWeb.AddressView,
+                    "_link.html",
+                    address: address_name.address,
+                    contract: false,
+                    class: "",
+                    use_custom_tooltip: false %>
+                </h3>
+              </span>
+            <% else %>
+              <span
+                data-toggle="tooltip"
+                data-placement="top"
+                data-template="<div class='tooltip tooltip-inversed-color tooltip-validator-details' role='tooltip'><div class='arrow'></div><div class='tooltip-inner'></div></div>"
+                title="<%= @block.miner %>">
+                <h3 class="address-balance-text text-truncate text-left">
+                  &nbsp;
+                  <br/>
+                  <%= render BlockScoutWeb.AddressView,
+                    "_link.html",
+                    address: @block.miner,
+                    contract: false,
+                    class: "",
+                    use_custom_tooltip: false %>
+                </h3>
+              </span>
+            <% end %>
+
+          </div>
         </div>
       </div>
     </div>

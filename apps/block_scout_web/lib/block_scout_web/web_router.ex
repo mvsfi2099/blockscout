@@ -78,6 +78,7 @@ defmodule BlockScoutWeb.WebRouter do
     resources("/accounts", AddressController, only: [:index])
 
     resources("/tokens", TokensController, only: [:index])
+    resources("/pos-validators", PosValidatorsController, only: [:index])
 
     resources("/bridged-tokens", BridgedTokensController, only: [:index, :show])
 

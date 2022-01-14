@@ -17,7 +17,7 @@ defmodule Explorer.Validator.MetadataRetriever do
 
   defp fetch_validators_list do
     # b7ab4db5 = keccak256(getValidators())
-    case Reader.query_contract(config(:validators_contract_address), contract_abi("validators.json"), %{
+    case Reader.query_contract(config(:poseidon_contract_address), contract_abi("poseidon.json"), %{
            "b7ab4db5" => []
          }) do
       %{"b7ab4db5" => {:ok, [validators]}} -> validators
@@ -26,37 +26,25 @@ defmodule Explorer.Validator.MetadataRetriever do
   end
 
   defp fetch_validator_metadata(validator_address) do
-    # fa52c7d8 = keccak256(validators(address))
-    %{"fa52c7d8" => {:ok, fields}} =
-      Reader.query_contract(config(:metadata_contract_address), contract_abi("metadata.json"), %{
-        "fa52c7d8" => [validator_address]
+    # 8a11d7c9 = keccak256(getValidatorInfo(address))
+    %{"8a11d7c9" => {:ok, fields}} =
+      Reader.query_contract(config(:poseidon_contract_address), contract_abi("poseidon.json"), %{
+        "8a11d7c9" => [validator_address]
       })
 
     fields
   end
 
   defp translate_metadata([
-         first_name,
-         last_name,
-         license_id,
-         full_address,
-         state,
-         zipcode,
-         expiration_date,
-         created_date,
-         _updated_date,
-         _min_treshold
+         name,
+         reward_addr,
+         _total_supply,
+         _last_block_height,
        ]) do
     %{
-      name: trim_null_bytes(first_name) <> " " <> trim_null_bytes(last_name),
-      metadata: %{
-        license_id: trim_null_bytes(license_id),
-        address: full_address,
-        state: trim_null_bytes(state),
-        zipcode: trim_null_bytes(zipcode),
-        expiration_date: expiration_date,
-        created_date: created_date
-      }
+      name: trim_null_bytes(name),
+      reward: reward_addr,
+      metadata: %{}
     }
   end
 

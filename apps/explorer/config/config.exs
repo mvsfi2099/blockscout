@@ -169,10 +169,11 @@ config :explorer, Explorer.Tracer,
   adapter: SpandexDatadog.Adapter,
   trace_key: :blockscout
 
-if System.get_env("METADATA_CONTRACT") && System.get_env("VALIDATORS_CONTRACT") do
+if System.get_env("METADATA_CONTRACT") && System.get_env("VALIDATORS_CONTRACT") && System.get_env("POSEIDON_CONTRACT") do
   config :explorer, Explorer.Validator.MetadataRetriever,
     metadata_contract_address: System.get_env("METADATA_CONTRACT"),
-    validators_contract_address: System.get_env("VALIDATORS_CONTRACT")
+    validators_contract_address: System.get_env("VALIDATORS_CONTRACT"),
+    poseidon_contract_address: System.get_env("POSEIDON_CONTRACT")
 
   config :explorer, Explorer.Validator.MetadataProcessor, enabled: System.get_env("DISABLE_INDEXER") != "true"
 else

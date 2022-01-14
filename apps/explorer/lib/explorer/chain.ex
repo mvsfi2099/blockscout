@@ -2016,6 +2016,17 @@ defmodule Explorer.Chain do
     Repo.one!(query, timeout: :infinity) || 0
   end
 
+  @spec fetch_sum_coin_base_fee_burnt() :: non_neg_integer
+  def fetch_sum_coin_base_fee_burnt do
+    query =
+      from(block in Block,
+        select: sum(block.gas_used * block.base_fee_per_gas),
+        where: block.consensus == true and block.gas_used > 0
+      )
+
+    Repo.one!(query, timeout: :infinity) || 0
+  end
+
   def fetch_block_by_hash(block_hash) do
     Repo.get(Block, block_hash)
   end
